@@ -3,18 +3,44 @@ $(document).ready(function(){$(".hire-me").click(function(){return $("html, body
 		
 	});
 	
-	$('#address').click(function(){
-
+	$('#name').change(function(){
+		$('#contact-success').hide();
+		$('#contact-error').hide();
 	});
 
-	$('#email').click(function(){
+	$('#email').change(function(){
+		$('#contact-success').hide();
+		$('#contact-error').hide();
+	});
 
+	$('#message').change(function(){
+		$('#contact-success').hide();
+		$('#contact-error').hide();
 	});
 
 	$('.page-contact form').submit(function(e){
-		if($(this).validate()){
+		var validate_result = $(this).validate();
+		$('#contact-success').hide();
+		$('#contact-error').hide();
+		if(validate_result.errorList.length == 0){
 			e.preventDefault();
-			console.log('Valido');
+			$.ajax({
+                 type: "POST",
+                 url: "/contact/",
+				 headers: {'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()},
+                 data: {
+					'from_email': $('#email').val(),
+					'subject': '[Contact] ' + $('#name').val(),
+					'message': $('#message').val(),
+                 },
+                 success: function(data){
+                     if(data.success){
+						 $('#contact-success').show();
+					 }else{
+						 $('#contact-error').show();
+					 }
+                 }
+            });
 		}
 	});
 });
