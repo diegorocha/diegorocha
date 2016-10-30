@@ -1,5 +1,6 @@
 from django.views import generic
 from django.conf import settings
+from django.shortcuts import render
 from django.http import JsonResponse
 from diegorocha.curriculo import models
 from django.shortcuts import get_object_or_404
@@ -32,9 +33,8 @@ class SendContactView(generic.View):
         return JsonResponse(response)
 
 
-class NotFoundView(generic.TemplateView):
+class NotFoundView(generic.View):
     template_name = 'not-found.html'
 
-    def profile(self):
-        profile = models.Profile.objects.first()
-        return profile
+    def dispatch(self, request, *args, **kwargs):
+        return render(request, self.template_name)

@@ -125,6 +125,8 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 USE_ETAGS = True
 
+ADMINS = (('Diego Rocha', 'diego@diegorocha.com.br'), )
+
 if config('USE_SMTP', default=False, cast=bool):
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
