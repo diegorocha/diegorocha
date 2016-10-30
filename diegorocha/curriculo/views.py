@@ -30,3 +30,11 @@ class SendContactView(generic.View):
             except Exception as ex:
                 response['error'] = str(ex)
         return JsonResponse(response)
+
+
+class NotFoundView(generic.TemplateView):
+    template_name = 'not-found.html'
+
+    def profile(self):
+        profile = models.Profile.objects.first()
+        return profile
