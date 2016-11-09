@@ -328,7 +328,6 @@
                     <div class="col-sm-7">
                         <h3>Entre em contato</h3>
                         <form class="form-horizontal" id="contact-form" action="{% url 'curriculo:send-contact' %}">
-                            {% csrf_token %}
                             <div class="control-group">
                                 <label class="control-label" for="name">Nome</label>
                                 <div class="controls">
