@@ -10,12 +10,18 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 
-default_cache = cache_page(60 * 30)
+class CacheMixin(object):
+    cache_timeout = 60 * 30
+
+    def get_cache_timeout(self):
+        return self.cache_timeout
+
+    def dispatch(self, *args, **kwargs):
+        return cache_page(self.get_cache_timeout())(super(CacheMixin, self).dispatch)(*args, **kwargs)
 
 
-@method_decorator(default_cache, name='dispatch')
-@method_decorator(ensure_csrf_cookie, name='dispatch')
-class HomeView(generic.TemplateView):
+# @method_decorator(ensure_csrf_cookie, name='dispatch')
+class HomeView(CacheMixin, generic.TemplateView):
     template_name = 'home.html'
 
     def profile(self):
@@ -41,9 +47,7 @@ class SendContactView(generic.View):
         return JsonResponse(response)
 
 
-@method_decorator(default_cache, name='dispatch')
-@method_decorator(ensure_csrf_cookie, name='dispatch')
-class NotFoundView(generic.View):
+class NotFoundView(CacheMixin, generic.View):
     template_name = 'not-found.html'
 
     def dispatch(self, request, *args, **kwargs):
