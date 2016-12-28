@@ -20,7 +20,6 @@ class CacheMixin(object):
         return cache_page(self.get_cache_timeout())(super(CacheMixin, self).dispatch)(*args, **kwargs)
 
 
-# @method_decorator(ensure_csrf_cookie, name='dispatch')
 class HomeView(CacheMixin, generic.TemplateView):
     template_name = 'home.html'
 
@@ -37,18 +36,20 @@ class SendContactView(generic.View):
         from_email = request.POST.get('from_email', '')
         profile = models.Profile.objects.first()
         response = {'success': False}
+        status_code = 400
         if subject and message and from_email and profile:
             try:
                 email = EmailMessage(subject, message, settings.DEFAULT_FROM_EMAIL, [profile.contact_email], reply_to=[from_email])
                 if email.send():
                     response['success'] = True
+                    status_code = 200
             except Exception as ex:
                 response['error'] = str(ex)
-        return JsonResponse(response)
+        return JsonResponse(response, status=status_code)
 
 
 class NotFoundView(CacheMixin, generic.View):
     template_name = 'not-found.html'
 
     def dispatch(self, request, *args, **kwargs):
-        return render(request, self.template_name)
+        return render(request, self.template_name, status=404)
