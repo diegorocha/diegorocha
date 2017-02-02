@@ -1,5 +1,5 @@
 from django.contrib import admin
-from curriculo.views import NotFoundView
+from diegorocha.curriculo.views import NotFoundView
 from django.conf.urls import url, include
 
 
