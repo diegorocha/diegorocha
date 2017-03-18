@@ -1,8 +1,10 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 
 
+@python_2_unicode_compatible
 class Profile(models.Model):
     name = models.CharField('Name', max_length=100, null=True)
     title = models.CharField('Title', max_length=100)
@@ -17,10 +19,11 @@ class Profile(models.Model):
     contact_email = models.EmailField('Contact E-mail', null=True)
     resumee_link = models.URLField('Link Resumee', default='')
 
-    def __unicode__(self):
+    def __str__(self):
         return 'Profile of %s' % self.name
 
 
+@python_2_unicode_compatible
 class Job(models.Model):
     class Meta:
         ordering = ['-start_date', ]
@@ -31,10 +34,11 @@ class Job(models.Model):
     end_date = models.DateField('End', null=True, blank=True)
     description = models.TextField('Description')
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s - %s' % (self.company, self.position)
 
 
+@python_2_unicode_compatible
 class Education(models.Model):
     class Meta:
         ordering = ['-start_year']
@@ -52,10 +56,11 @@ class Education(models.Model):
     end_year = models.IntegerField('End', null=True, blank=True)
     description = models.TextField('Description')
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s at %s' % (self.degree, self.title)
 
 
+@python_2_unicode_compatible
 class SocialMedia(models.Model):
     class Meta:
         ordering = ['order', 'name']
@@ -65,5 +70,5 @@ class SocialMedia(models.Model):
     icon = models.CharField('Icon', max_length=30)
     order = models.IntegerField('Order', blank=True, default=1)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
