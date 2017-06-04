@@ -44,8 +44,10 @@ class Education(models.Model):
         ordering = ['-start_year']
     EM_CURSO = 'E'
     CONCLUIDO = 'C'
+    TRANCADO = 'T'
     STATUS_CHOICES = (
         (EM_CURSO, 'Em Curso'),
+        (TRANCADO, 'Trancado'),
         (CONCLUIDO, 'Concluido'),
     )
     profile = models.ForeignKey(Profile, related_name='educations')
