@@ -1,7 +1,7 @@
+from django.urls import reverse
 from model_mommy import mommy
 from django.test import TestCase
 from django.conf import settings
-from django.core.urlresolvers import reverse
 
 
 class HomeTest(TestCase):

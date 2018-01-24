@@ -27,7 +27,7 @@ class Profile(models.Model):
 class Job(models.Model):
     class Meta:
         ordering = ['-start_date', ]
-    profile = models.ForeignKey(Profile, related_name='jobs')
+    profile = models.ForeignKey(Profile, related_name='jobs', on_delete=models.CASCADE)
     company = models.CharField('Company', max_length=100)
     position = models.CharField('Position', max_length=100)
     start_date = models.DateField('Start')
@@ -50,7 +50,7 @@ class Education(models.Model):
         (TRANCADO, 'Trancado'),
         (CONCLUIDO, 'Concluido'),
     )
-    profile = models.ForeignKey(Profile, related_name='educations')
+    profile = models.ForeignKey(Profile, related_name='educations', on_delete=models.CASCADE)
     title = models.CharField('Title', max_length=100)
     degree = models.CharField('Degree', max_length=100)
     status = models.CharField('Status', max_length=1, choices=STATUS_CHOICES, default=EM_CURSO)
@@ -66,7 +66,7 @@ class Education(models.Model):
 class SocialMedia(models.Model):
     class Meta:
         ordering = ['order', 'name']
-    profile = models.ForeignKey(Profile, related_name='social_media')
+    profile = models.ForeignKey(Profile, related_name='social_media', on_delete=models.CASCADE)
     name = models.CharField('Name', max_length=20)
     link = models.URLField('URL')
     icon = models.CharField('Icon', max_length=30)
