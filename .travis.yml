@@ -3,7 +3,8 @@ dist: xenial
 env:
   - SECRET_KEY=")vjn2yf9+7l&llpv3_ieqyoz^w)f02$h%$hja%em7^1+yhbl&z"
 python:
-  - "3.5"
+  - "3.6"
+  - "3.8"
 before_install:
   - pip install --upgrade pip
 install:
