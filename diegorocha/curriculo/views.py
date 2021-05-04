@@ -53,3 +53,8 @@ class NotFoundView(CacheMixin, generic.View):
 
     def dispatch(self, request, *args, **kwargs):
         return render(request, self.template_name, status=404)
+
+
+class HealthCheckView(generic.View):
+    def get(self, request):
+        return JsonResponse({"status": "OK"}, status=200)

@@ -40,6 +40,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'htmlmin.middleware.HtmlMinifyMiddleware',
     'htmlmin.middleware.MarkRequestMiddleware',
+    'diegorocha.curriculo.middlewares.VersionMiddleware',
 ]
 
 ROOT_URLCONF = 'diegorocha.urls'
@@ -108,11 +109,22 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Allow all host headers
 ALLOWED_HOSTS = ['*']
 
+VERSION_CODE = config('VERSION_CODE', default='dev')
+VERSION_CODE_HEADER = config('VERSION_CODE_HEADER', default='X-Version')
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
+STATIC_S3 = config('STATIC_S3', cast=bool, default=False)
+if STATIC_S3:
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME', default='diegorocha-static')
+    AWS_LOCATION = VERSION_CODE
+    AWS_QUERYSTRING_AUTH = config('AWS_QUERYSTRING_AUTH', cast=bool, default=False)
+    STATIC_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{VERSION_CODE}/'
+else:
+    STATIC_URL = config('STATIC_URL', default='/static/')
+    STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
-STATIC_URL = config('STATIC_URL', default='/static/')
 
 # Extra places for collectstatic to find static files.
 STATICFILES_DIRS = [
