@@ -121,6 +121,7 @@ if STATIC_S3:
     AWS_S3_OBJECT_PARAMETERS = {
         "CacheControl": "max-age=31536000",
     }
+    AWS_IS_GZIPPED = True
     AWS_LOCATION = VERSION_CODE
     AWS_QUERYSTRING_AUTH = config('AWS_QUERYSTRING_AUTH', cast=bool, default=False)
     STATIC_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{VERSION_CODE}/'
