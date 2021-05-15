@@ -118,6 +118,9 @@ STATIC_S3 = config('STATIC_S3', cast=bool, default=False)
 if STATIC_S3:
     STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME', default='diegorocha-static')
+    AWS_S3_OBJECT_PARAMETERS = {
+        "CacheControl": "max-age=31536000",
+    }
     AWS_LOCATION = VERSION_CODE
     AWS_QUERYSTRING_AUTH = config('AWS_QUERYSTRING_AUTH', cast=bool, default=False)
     STATIC_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{VERSION_CODE}/'
