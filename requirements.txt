@@ -6,7 +6,7 @@ chardet==3.0.4
 coverage==4.3
 coveralls==1.1
 dj-database-url==0.4.1
-Django==2.2.20
+Django==2.2.22
 django-htmlmin==0.10.0
 django-nose==1.4.4
 django-storages==1.11.1
@@ -21,10 +21,9 @@ psycopg2==2.7.3.1
 python-dateutil==2.8.1
 python-decouple==3.0
 pytz==2017.3
-requests==2.22.0
 s3transfer==0.4.1
 six==1.10.0
 sqlparse==0.3.0
-urllib3==1.25.11
+urllib3==1.26.5
 webencodings==0.5
 whitenoise==3.2
