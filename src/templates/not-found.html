@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Diego Rocha - I find your lack of navigation disturbing</title>
+{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="Página não encontrada">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:url" content="http://diegorocha.com.br/404">
+    <meta property="og:site_name" content="Diego Rocha">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="I find your lack of navigation disturbing">
+    <meta property="og:description" content="Página não encontrada">
+    <meta property="og:image" content="{{ url_for('static', filename='img/404.png') }}">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="400">
+    <meta property="og:image:height" content="420">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@diegor_">
+    <meta name="twitter:creator" content="@diegor_">
+    <meta name="twitter:title" content="I find your lack of navigation disturbing">
+    <meta name="twitter:description" content="Página não encontrada">
+    <meta name="twitter:image" content="{{ url_for('static', filename='img/404.png') }}">
+{% endblock %}
+
+{% block custom_head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/error.css') }}">
+{% endblock %}
+
+{% block content %}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="error-template">
+                        <h1>
+                            I find your lack of navigation disturbing
+                        </h1>
+                        <h2>
+                            Página não encontrada
+                        </h2>
+                        <div class="error-details">
+                            <p>
+                                Oops! A página que você procura não foi encontrada
+                            </p>
+                            <img width='400' alt='Not found' src='{{ url_for('static', filename='img/404.png') }}'/>
+                        </div>
+                        <div class="error-actions">
+                            <a href="//diegorocha.com.br" class="btn btn-primary btn-lg">
+                                <span class="glyphicon glyphicon-home"></span>
+                                Home page
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
