@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 data "aws_acm_certificate" "wildcard" {
   domain      = "diegorocha.com.br"
   most_recent = true
@@ -5,7 +7,6 @@ data "aws_acm_certificate" "wildcard" {
 
 resource "aws_s3_bucket" "diegorocha_com_br" {
   bucket = "diegorocha.com.br"
-  acl    = "public-read"
 
   tags = {
     service = "diegorocha.com.br"
@@ -13,38 +14,20 @@ resource "aws_s3_bucket" "diegorocha_com_br" {
   }
 }
 
-resource "aws_s3_bucket_cors_configuration" "diegorocha_com_br" {
+resource "aws_s3_bucket_ownership_controls" "diegorocha_com_br" {
   bucket = aws_s3_bucket.diegorocha_com_br.bucket
-
-  cors_rule {
-    allowed_headers = [
-    "*"]
-    allowed_methods = [
-    "GET"]
-    allowed_origins = [
-      "https://diegorocha.com.br",
-      "https://www.diegorocha.com.br",
-      "https://diegosrocha.com.br",
-      "https://diegorocha.dev",
-      "http://localhost:8000",
-    ]
-    expose_headers = [
-    "ETag"]
-    max_age_seconds = 3000
+  rule {
+    object_ownership = "BucketOwnerEnforced"
   }
 }
 
-resource "aws_s3_bucket_website_configuration" "diegorocha_com_br" {
-  bucket = aws_s3_bucket.diegorocha_com_br.bucket
+resource "aws_s3_bucket_public_access_block" "diegorocha_com_br" {
+  bucket = aws_s3_bucket.diegorocha_com_br.id
 
-  index_document {
-    suffix = "index.html"
-  }
-
-  error_document {
-    key = "not_found.html"
-  }
-
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 resource "aws_s3_bucket_policy" "diegorocha_com_br_policy" {
@@ -54,14 +37,33 @@ resource "aws_s3_bucket_policy" "diegorocha_com_br_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect    = "Allow"
-        Principal = "*"
-        Action = [
-          "s3:GetObject",
-        ]
+        Sid    = "AllowAllToRootAndCreator",
+        Effect = "Allow",
+        Principal = {
+          "AWS" : [
+            "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
+            data.aws_caller_identity.current.arn,
+          ]
+        }
+        Action = "s3:*",
         Resource = [
-          "${aws_s3_bucket.diegorocha_com_br.arn}/*"
+          aws_s3_bucket.diegorocha_com_br.arn,
+          "${aws_s3_bucket.diegorocha_com_br.arn}/*",
         ]
+      },
+      {
+        Sid    = "AllowCloudFrontServicePrincipalReadOnly",
+        Effect = "Allow",
+        Principal = {
+          Service = "cloudfront.amazonaws.com"
+        },
+        Action   = "s3:GetObject",
+        Resource = "${aws_s3_bucket.diegorocha_com_br.arn}/*",
+        Condition = {
+          "StringEquals" : {
+            "AWS:SourceArn" : aws_cloudfront_distribution.diegorocha_com_br.arn,
+          }
+        }
       },
     ]
   })
@@ -90,19 +92,41 @@ resource "aws_iam_policy" "policy_diegorocha_com_br" {
           "${aws_s3_bucket.diegorocha_com_br.arn}/*"
         ]
       },
+
     ]
   })
 }
 
+resource "aws_cloudfront_origin_access_control" "diegorocha_com_br" {
+  name                              = aws_s3_bucket.diegorocha_com_br.bucket
+  description                       = "${aws_s3_bucket.diegorocha_com_br.bucket} Policy"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
 resource "aws_cloudfront_distribution" "diegorocha_com_br" {
   origin {
-    domain_name = aws_s3_bucket.diegorocha_com_br.bucket_regional_domain_name
-    origin_id   = aws_s3_bucket.diegorocha_com_br.bucket
+    origin_access_control_id = aws_cloudfront_origin_access_control.diegorocha_com_br.id
+    domain_name              = aws_s3_bucket.diegorocha_com_br.bucket_regional_domain_name
+    origin_id                = aws_s3_bucket.diegorocha_com_br.bucket
   }
   enabled             = true
   is_ipv6_enabled     = true
   comment             = "Distribution for diegorocha.com.br"
   default_root_object = "index.html"
+
+  custom_error_response {
+    error_code         = 403
+    response_code      = 404
+    response_page_path = "/not_found.html"
+  }
+
+  custom_error_response {
+    error_code         = 404
+    response_code      = 404
+    response_page_path = "/not_found.html"
+  }
 
   aliases = [
     "diegorocha.com.br",
