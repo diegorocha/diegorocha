@@ -9,3 +9,13 @@ terraform {
     profile              = "diego"
   }
 }
+
+provider "google" {
+  project = "diegor-infra"
+  region  = "us-central1"
+}
+
+provider "google-beta" {
+  project = "diegor-infra"
+  region  = "us-central1"
+}
