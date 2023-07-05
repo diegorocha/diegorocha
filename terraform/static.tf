@@ -5,6 +5,10 @@ data "aws_acm_certificate" "wildcard" {
   most_recent = true
 }
 
+locals {
+  cloudfront_aliases = concat(keys(local.domains_zones), keys(local.subdomains_zones))
+}
+
 resource "aws_s3_bucket" "diegorocha_com_br" {
   bucket = "diegorocha.com.br"
 
@@ -128,12 +132,7 @@ resource "aws_cloudfront_distribution" "diegorocha_com_br" {
     response_page_path = "/not_found.html"
   }
 
-  aliases = [
-    "diegorocha.com.br",
-    "www.diegorocha.com.br",
-    "diegosrocha.com.br",
-    "diegorocha.dev",
-  ]
+  aliases = local.cloudfront_aliases
 
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
