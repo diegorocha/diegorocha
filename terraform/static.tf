@@ -46,7 +46,6 @@ resource "aws_s3_bucket_policy" "diegorocha_com_br_policy" {
         Principal = {
           "AWS" : [
             "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
-            data.aws_caller_identity.current.arn,
           ]
         }
         Action = "s3:*",
