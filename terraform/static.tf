@@ -1,12 +1,17 @@
+locals {
+  cloudfront_aliases = [
+    "diegorocha.com.br",
+    "diegosrocha.com.br",
+    "diegorocha.dev",
+    "www.diegorocha.com.br"
+  ]
+}
+
 data "aws_caller_identity" "current" {}
 
 data "aws_acm_certificate" "wildcard" {
   domain      = "diegorocha.com.br"
   most_recent = true
-}
-
-locals {
-  cloudfront_aliases = concat(keys(local.domains_zones), keys(local.subdomains_zones))
 }
 
 resource "aws_s3_bucket" "diegorocha_com_br" {
